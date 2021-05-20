@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html >
+<head>
+<meta charset="UTF-8">
+<meta name="google" value="notranslate">
+<meta name="robots" content="noindex">
+<title>CodePen - Button Width</title>
+<link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
+<style>
+body {
+	font-family: Calibri, Sans-Serif;
+	padding:0;
+}
+
+#sidebar {
+	position: fixed;
+	z-index: 10;
+	left: 0;
+	top: 0;
+	background-color: grey;
+	height: 100%;
+	min-width: 18em;
+}
+
+main {
+	padding: 0;
+	margin-left: 18em;
+}
+</style>
+
+<script>
+	window.console = window.console || function(t) {};
+</script>
+</head>
+
+<body class="container">
+	<div id="sidebar" class="col-sm-2 navbar navbar-nav text-center">
+		<h3>BootStrap</h3>
+		<div class="row">
+			<button class="btn btn-default btn-xs col-xs-2 col-xs-offset-1">Tester</button>
+			<button class="btn btn-default btn-xs col-xs-2">Tester</button>
+			<button class="btn btn-default btn-xs col-xs-2">Tester</button>
+			<button class="btn btn-default btn-xs col-xs-2">Tester</button>
+			<button class="btn btn-default btn-xs col-xs-2">Tester</button>
+		</div>
+		<div class="row" style="margin-top:10px">
+			<button class="btn btn-default btn-sm col-xs-3">Tester</button>
+			<button class="btn btn-default btn-sm col-xs-3">Tester</button>
+			<button class="btn btn-default btn-sm col-xs-3">Tester</button>
+			<button class="btn btn-default btn-sm col-xs-3">Test</button>
+		</div>
+		<div class="row" style="margin-top:10px">
+			<button class="btn btn-default btn-sm col-xs-3">Tester</button>
+			<button class="btn btn-default btn-sm col-xs-3">Test</button>
+			<button class="btn btn-default btn-sm col-xs-3">Test</button>
+			<button class="btn btn-default btn-sm col-xs-3">Test</button>
+		</div>
+	</div>
+
+	<main class="col-sm-10">
+		<div class="jumbotron text-center">
+			<h2>Title</h2>
+		</div>
+	</main>
+
+	<script>
+		if (document.location.search.match(/type=embed/gi)) {
+			window.parent.postMessage("resize", "*");
+		}
+	</script>
+</body>
+</html>
