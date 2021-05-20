@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+    
+    <title>Main</title>
+    
+    <link href="../static/css/bootstrap.css" rel="stylesheet" />
+    <link href="../static/css/coming-sssoon.css" rel="stylesheet" />
+    
+    <!--     Fonts     -->
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Grand+Hotel' rel='stylesheet' type='text/css'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script>
+        {% set kda=[] %} 
+        {% set dpg = [] %}
+        {% set goldEarned = [] %}
+        {% set wardsPlaced = [] %}
+        {% set champLevel = [] %}
+        {% set totalDamageDealtToChampions = [] %}
+        {% set totalMinionsKilled = [] %}
+        {% set timeCCingOthers = [] %}
+
+        {% for Game_DATA in Game_DATAs %}
+            
+            {{ kda.append(((Game_DATA['stats']['kills']+Game_DATA['stats']['assists'])/Game_DATA['stats']['deaths'])|round(1) ) }};
+            {{ dpg.append((Game_DATA['stats']['totalDamageDealtToChampions']/Game_DATA['stats']['goldEarned'])|round(1) ) }};
+            {{ goldEarned.append((Game_DATA['stats']['goldEarned']/1000)|round(1) ) }};
+            {{ wardsPlaced.append(Game_DATA['stats']['wardsPlaced']) }};
+            {{ champLevel.append(Game_DATA['stats']['champLevel']) }};
+            {{ totalDamageDealtToChampions.append((Game_DATA['stats']['totalDamageDealtToChampions']/1000)|round(1)) }};
+            {{ totalMinionsKilled.append(Game_DATA['stats']['totalMinionsKilled']) }};
+            {{ timeCCingOthers.append(Game_DATA['stats']['timeCCingOthers']) }};
+
+        {% endfor %}
+        var ctxL = document.getElementById("lineChart").getContext('2d');
+        var myLineChart = new Chart(ctxL, {
+            type: 'line',
+            data: {
+            labels: ["kda", "데미지/골드", "골드획득", "와드설치","레벨링","데미지","미니언킬","군중제어"],
+            datasets: [{
+                label: "K/A",
+                data: [{{ (kda|sum / kda|count)|round(1) }},{{ (dpg|sum / dpg|count)|round(1) }},{{ (goldEarned|sum / goldEarned|count)|round(1) }}
+                ,{{ (wardsPlaced|sum / wardsPlaced|count)|round(1) }},{{ (champLevel|sum / champLevel|count)|round(1) }},{{ (totalDamageDealtToChampions|sum / totalDamageDealtToChampions|count)|round(1) }}
+                ,{{ (totalMinionsKilled|sum / totalMinionsKilled|count)|round(1) }},{{ (timeCCingOthers|sum / timeCCingOthers|count)|round(1) }} ],
+                backgroundColor: [
+                'rgba(0, 137, 132, .2)',
+                ],
+                borderColor: [
+                'rgba(0, 10, 130, .7)',
+                ],
+                borderWidth: 2
+            },
+            ]
+            },
+            options: {
+            responsive: true
+            }
+        });
+    </script>
+    
+</head>
+<body>
+    
+    
+    <div class="print"> {{ sum_name }} </div>
+    <div class="print"> 큐 타입 {{ results[0][0] }} </div>
+    <div class="print"> 랭크 {{ results[0][1], results[0][2], results[0][6] }} point</div>
+    <div class="print"> 승률 {{ (results[0][3]/(results[0][3]+results[0][4])*100)|round(2) }} %</div>
+    
+
+    <div>
+        {{ listcoll[1] }}
+        {{ (kda|sum / kda|count)|round(1) }}
+        {{ (dpg|sum / dpg|count)|round(1) }}
+        {{ (goldEarned|sum / goldEarned|count)|round(1) }}
+        {{ (wardsPlaced|sum / wardsPlaced|count)|round(1) }}
+        {{ (champLevel|sum / champLevel|count)|round(1) }}
+        {{ (totalDamageDealtToChampions|sum / totalDamageDealtToChampions|count)|round(1) }}
+        {{ (totalMinionsKilled|sum / totalMinionsKilled|count)|round(1) }}
+        {{ (timeCCingOthers|sum / timeCCingOthers|count)|round(1) }}
+        <canvas id="lineChart"></canvas>
+
+    </div>
+</body>
+
+

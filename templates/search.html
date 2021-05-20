@@ -1,0 +1,312 @@
+
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+  <meta name="viewport" content="width=device-width" />
+
+  <title>LPMC - {{ sum_name }}</title>
+
+  <link href="../static/css/bootstrap.css" rel="stylesheet" />
+<link href="../static/css/coming-sssoon.css" rel="stylesheet" />
+
+  <style>
+    .compare_position_bt{
+      height: 100px;
+      width: 100px;
+      padding: 0px;
+      border: none;
+      margin: 30%;
+      margin-top:3%;
+      margin-bottom: 3%;
+      
+    }
+    
+    .compare_side_pu{
+      display: none;
+      float:left;
+      
+    }
+    .compare_side_tt{
+    
+      float:left;
+      
+    }
+    .compare_pro_bt{
+      height: 100px;
+      width: 100px;
+      padding: 0px;
+      border: none;
+      margin: 10%;
+      margin-top:16%;
+      margin-bottom: 15%;
+      background-color:rgb(23, 21, 35);
+    }
+    
+
+  </style>
+  <!--     Fonts     -->
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+  <link href='http://fonts.googleapis.com/css?family=Grand+Hotel' rel='stylesheet' type='text/css'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script>
+        {% set kda=[] %} 
+        {% set dpg = [] %}
+        {% set goldEarned = [] %}
+        {% set wardsPlaced = [] %}
+        {% set champLevel = [] %}
+        {% set totalDamageDealtToChampions = [] %}
+        {% set totalMinionsKilled = [] %}
+        {% set timeCCingOthers = [] %}
+
+        {% for Game_DATA in Game_DATAs %}
+            
+            {{ kda.append(((Game_DATA['stats']['kills']+Game_DATA['stats']['assists'])/Game_DATA['stats']['deaths'])|round(1) ) }};
+            {{ dpg.append((Game_DATA['stats']['totalDamageDealtToChampions']/Game_DATA['stats']['goldEarned'])|round(1) ) }};
+            {{ goldEarned.append((Game_DATA['stats']['goldEarned']/1000)|round(1) ) }};
+            {{ wardsPlaced.append(Game_DATA['stats']['wardsPlaced']) }};
+            {{ champLevel.append(Game_DATA['stats']['champLevel']) }};
+            {{ totalDamageDealtToChampions.append((Game_DATA['stats']['totalDamageDealtToChampions']/1000)|round(1)) }};
+            {{ totalMinionsKilled.append(Game_DATA['stats']['totalMinionsKilled']) }};
+            {{ timeCCingOthers.append(Game_DATA['stats']['timeCCingOthers']) }};
+
+        {% endfor %}
+        
+    </script>
+    
+  
+
+</head>
+
+<body>
+  <nav class="navbar navbar-transparent navbar-fixed-top" role="navigation">
+    <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <button type="submit" class="btn btn-danger btn-fill" onClick="location.href='./index.html'"><a class="p-2 text-muted" href="index.html">메인 로고</a></button>
+        <ul class="nav navbar-nav navbar-right">
+          <div class="row">
+
+            <div class="col-md-4 col-md-offset-4 col-sm6-6 col-sm-offset-3 ">
+
+              <form action="/user" method="GET" class="form-inline" role="form" style="width: 470px;">
+                
+                  
+                <input type="text" style="width: 40%;" name="sum_name" class="form-control transparent" placeholder="소환사 명 검색">
+                <input type="submit" value = "전적 검색"class="btn btn-danger btn-fill" >
+                <input type="submit" value = "히트맵 검색" class="btn btn-danger btn-fill" >
+              </form>
+
+
+            </div>
+          </div>
+        </ul>
+
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container -->
+
+  </nav>
+
+  <div class="main" style="background-image: url('../static/images/default1.jpg')">
+    
+    <div class="side_menu_left" style="vertical-align: top; display:inline-block;margin-top: 10%;margin-left: 20%; width: 300px;height: 500px;">
+      <div class="tier" style="height:140; background-color:rgba(23, 21, 35, 0.685);border:1px solid rgba(23, 21, 35, 0.685);display:flex">
+        <div style="width: 140;height: 140;float:left">
+          {% if results[0][1] == 'GRANDMASTER' %}
+          <img src={{ url_for('static', filename='images/tier/grandmaster_1.png') }} style="margin:5%;width: 100px;height: 100px;">
+          {% elif results[0][1] == 'MASTER' %}
+          <img src={{ url_for('static', filename='images/tier/master_1.png') }} style="margin:5%;width: 100px;height: 100px;">
+          {% elif results[0][1] == 'CHALLENGER' %}
+          <img src={{ url_for('static', filename='images/tier/challenger_1.png') }} style="margin:5%;width: 100px;height: 100px;">
+          {% endif %}
+        </div>
+        <div style="width: 140;height: 140;">
+          <div style="color: blanchedalmond;"><h4 style="margin:0">{{ sum_name }}</h4></div>
+          <div style="color: rgb(161, 121, 59);">{{ results[0][0] }}</div>
+          <div style="color: blanchedalmond;">랭크 {{ results[0][1] }} {{ results[0][2] }} </div>
+          <div style="color: blanchedalmond;">{{ results[0][6] }} point</div>
+          <div style="color: blanchedalmond;">승률 {{ (results[0][3]/(results[0][3]+results[0][4])*100)|round(2) }} %</div>
+        </div>
+        
+        
+        
+      </div>
+      <div class="match_stat" style="margin-top:5%; width: 300px;height: 300px;background-color:rgba(23, 21, 35, 0.685);border:1px solid rgba(23, 21, 35, 0.685);">
+        <div class="img_match" style="text-align:center; ">
+          <img src="../images/match01.png" style="margin:30%; width: 100px; height: 100px;">
+        </div>
+        
+      </div>
+      
+    </div>
+    <div class="menu_left_top" style="vertical-align: top;display: inline-block;margin-left: 5px;margin-top: 10%;height: 300;">
+      <div class="compare_bt" style="margin-left:2%; margin-bottom:3%;">
+        <button class="btn btn-danger btn-fill" id="top_tier_cmp" style="background-color: #6f6ec0;
+        border-color: rgb(128, 119, 165);">포지션별 상위권 유저와 비교</button>
+        <button type="submit" class="btn btn-danger btn-fill" id="pro_user_cmp"style="background-color: #6f6ec0;
+        border-color: rgb(128, 119, 165);">프로유저와 비교</button>
+      </div>
+      
+      <div class="compare" style="height: 600px; background-color:rgba(23, 21, 35, 0.685);border:1px solid rgb(26, 110, 116);">
+        <div class="compare_side_tt" style="display: inline-block;width: 300px;height: 599px; background-color:rgb(23, 21, 35);">
+          <button class="compare_position_bt" id="bt_top"><img src={{ url_for('static', filename='images/position_top.jpg') }} style="height:100px;width: 100px; border: none;"></button>
+          <button class="compare_position_bt" id="bt_jng"><img src={{ url_for('static', filename='images/position_jng.jpg') }} style="height:100px;width: 100px; border: none;"></button>
+          <button class="compare_position_bt" id="bt_mid"><img src={{ url_for('static', filename='images/position_mid.jpg') }} style="height:100px;width: 100px; border: none;"></button>
+          <button class="compare_position_bt" id="bt_adc"><img src={{ url_for('static', filename='images/position_adc.jpg') }} style="height:100px;width: 100px; border: none;"></button>
+          <button class="compare_position_bt" id="bt_sup"><img src={{ url_for('static', filename='images/position_sup.jpg') }} style="height:100px;width: 100px; border: none;"></button>
+        </div>
+        <div class="compare_side_pu" style="width: 300px;height: 599px; background-color:rgb(23, 21, 35);">
+          <button class="compare_pro_bt" id="bt_pro1"><img src="../images/pro_image/dwg_Showmaker.png" style="height:100px;width: 100px; border: none;"></button><a>DWG_Showmaker</a>
+          <button class="compare_pro_bt" id="bt_pro2"><img src="../images/pro_image/dwg_Ghost2.png" style="height:100px;width: 100px; border: none;"></button><a>DWG_Ghost</a>
+          <button class="compare_pro_bt" id="bt_pro3"><img src="../images/pro_image/dwg_Canyon.png" style="height:100px;width: 100px; border: none;"></button><a>DWG_Canyon</a>
+      
+        </div>
+        <div style="display: inline-block;width: 600px;height: 600px;">
+          <canvas id="myChart"></canvas>
+        </div>
+      </div>
+      <script>
+    
+        var ctx = document.getElementById("myChart").getContext('2d');
+        const data = {
+            labels: [
+                "kda", "데미지/골드", "골드획득", "와드설치","레벨링","데미지","미니언킬","군중제어"
+            ],
+            datasets: [{
+                label: '검색자',
+                data: [{{ (kda|sum / kda|count)|round(1) }},{{ (dpg|sum / dpg|count)|round(1) }},{{ (goldEarned|sum / goldEarned|count)|round(1) }}
+                    ,{{ (wardsPlaced|sum / wardsPlaced|count)|round(1) }},{{ (champLevel|sum / champLevel|count)|round(1) }},{{ (totalDamageDealtToChampions|sum / totalDamageDealtToChampions|count)|round(1) }}
+                    ,{{ (totalMinionsKilled|sum / 10 / totalMinionsKilled|count)|round(1) }},{{ (timeCCingOthers|sum / timeCCingOthers|count)|round(1) }}],
+                fill: true,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgb(255, 99, 132)',
+                pointBackgroundColor: 'rgb(255, 99, 132)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(255, 99, 132)'
+            }, {
+                label: '상위평균',
+                data: [{{ listcoll[1][0] }},{{ listcoll[1][1] }},{{ listcoll[1][2] }},{{ listcoll[1][3] }},{{ listcoll[1][4] }},{{ listcoll[1][5] }},{{ listcoll[1][6]/10 }},{{ listcoll[1][7] }}],
+                fill: true,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgb(54, 162, 235)',
+                pointBackgroundColor: 'rgb(54, 162, 235)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(54, 162, 235)'
+            }]
+        };
+        const options = {
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: false
+                        },
+                        suggestedMin: 50,
+                        suggestedMax: 100
+                    }
+                }
+            };
+        var myChart = new Chart(ctx, {
+            type: 'radar',
+            data: data,
+            options: options
+        });
+        </script>
+
+      
+        
+      
+      
+      
+    </div>
+    <div class="footer">
+      <div class="container">
+        Made with <i class="fa fa-heart heart"></i> by <a href="http://www.creative-tim.com">Creative Tim</a>. Free
+        download <a href="http://www.creative-tim.com/product/coming-sssoon-page">here.</a>
+      </div>
+    </div>
+  </div>
+  
+  
+</body>
+<script src="../static/js/jquery-1.10.2.js" type="text/javascript"></script>
+<script src="../static/js/bootstrap.min.js" type="text/javascript"></script>
+<script>
+  $(function(){
+    $('#top_tier_cmp').click(function(){
+      $('.compare_side_tt').show();
+      $('.compare_side_pu').hide();
+    });
+  });
+  $(function(){
+    $('#pro_user_cmp').click(function(){
+      $('.compare_side_pu').show();
+      $('.compare_side_tt').hide();
+      
+    });
+  });
+  $(function(){
+    $('#bt_top').click(function(){
+      $('#testa1').text("top user data")
+      
+    });
+  });
+  $(function(){
+    $('#bt_jng').click(function(){
+      $('#testa1').text("jungle user data")
+      
+    });
+  });
+  $(function(){
+    $('#bt_mid').click(function(){
+      $('#testa1').text("mid user data")
+      
+    });
+  });
+  $(function(){
+    $('#bt_adc').click(function(){
+      $('#testa1').text("AD carry user data")
+      
+    });
+  });
+  $(function(){
+    $('#bt_sup').click(function(){
+      $('#testa1').text("supporter user data")
+      
+    });
+  });
+  $(function(){
+    $('#bt_pro1').click(function(){
+      $('#testa1').text("pro1 data")
+      
+    });
+  });
+  $(function(){
+    $('#bt_pro2').click(function(){
+      $('#testa1').text("pro2 data")
+      
+    });
+  });
+  $(function(){
+    $('#bt_pro3').click(function(){
+      $('#testa1').text("pro3 data")
+      
+    });
+  });
+
+</script>
+</html>
