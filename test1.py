@@ -8,10 +8,15 @@ from math import pi
 from matplotlib.path import Path
 from matplotlib.spines import Spine
 from matplotlib.transforms import Affine2D
+import PIL.Image as pilimg
+import os
 
+user = os.path.join('static', 'images/user')
 df_filter=pd.DataFrame()
+
 apikey = 'RGAPI-5c385776-a3f1-46d5-8aab-e045125292a0'
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = user
 @app.route('/')
 @app.route('/home')
 def home():
@@ -161,6 +166,49 @@ def search():
         , round(totmk, 1), round(timeCCingOthers, 1)]
         return lskk
 
+    def proheat(Game_DATAs):
+        df=pd.DataFrame()
+        kda=[]
+        dpg = []
+        goldEarned = []
+        wardsPlaced = []
+        champLevel = []
+        totalDamageDealtToChampions = []
+        totalMinionsKilled = []
+        timeCCingOthers = []
+        for Game_DATA in Game_DATAs:
+            if Game_DATA['stats']['deaths']==0:
+                death=1
+            else:
+                death=Game_DATA['stats']['deaths']
+        
+            kda.append(round((Game_DATA['stats']['kills']+Game_DATA['stats']['assists'])/death,2))
+            dpg.append(round((Game_DATA['stats']['totalDamageDealtToChampions']+Game_DATA['stats']['goldEarned'])/1000,2))
+            goldEarned.append(round(Game_DATA['stats']['goldEarned']/1000))
+            wardsPlaced.append(Game_DATA['stats']['wardsPlaced'])
+            champLevel.append(Game_DATA['stats']['champLevel'])
+            totalDamageDealtToChampions.append(round(Game_DATA['stats']['totalDamageDealtToChampions']/1000))
+            totalMinionsKilled.append(Game_DATA['stats']['totalMinionsKilled']/ 10)
+            timeCCingOthers.append(Game_DATA['stats']['timeCCingOthers'])
+
+        df['kda']=[round(sum(kda)/len(kda),2)]
+        df['dpg']=round(sum(dpg)/len(dpg),2)
+        df['goldEarned']=round(sum(goldEarned)/len(goldEarned),2)
+        df['wardsPlaced']=round(sum(wardsPlaced)/len(wardsPlaced),2)
+        df['champLevel']=round(sum(champLevel)/len(champLevel),2)
+        df['totalDamageDealtToChampions']=round(sum(totalDamageDealtToChampions)/len(totalDamageDealtToChampions),2)
+        df['totalMinionsKilled']=round(sum(totalMinionsKilled)/len(totalMinionsKilled),2)
+        df['timeCCingOthers']=round(sum(timeCCingOthers)/len(timeCCingOthers),2)
+
+        plt.pcolor(df)
+        plt.xticks(np.arange(0.5))
+        plt.yticks(np.arange(1))
+        plt.savefig('./static/images/user/user.png')
+        
+        
+
+    df1= pd.read_csv('proheat/allpro.csv')
+    list_from_df = df1.values.tolist()
     listcoll =[stats_means_sOthers('Win','T'),stats_means_sOthers('Lose','T'),stats_means_sOthers('Win','J'),stats_means_sOthers('Lose','J')
       ,stats_means_sOthers('Win','M'),stats_means_sOthers('Lose','M'),stats_means_sOthers('Win','B'),stats_means_sOthers('Lose','B')
       ,stats_means_sOthers('Win','S'),stats_means_sOthers('Lose','S')]
@@ -169,10 +217,12 @@ def search():
     for league_dict in league_dicts:
         results.append(get_league_info(league_dict))
     length = len(results)
-    df=pd.DataFrame(Game_DATAs)
+    proheat(Game_DATAs)
+    full_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'user.png')
+    #df=pd.DataFrame(Game_DATAs)
     return render_template('search.html',sum_name=sum_name,results=results, length=length, 
     profileIcon=profileIcon_id, my_most_one=my_most_one, most_one=most_one, most_num=most_num,
-    Game_DATAs=Game_DATAs, zip=zip,listcoll=listcoll)
+    Game_DATAs=Game_DATAs, zip=zip,listcoll=listcoll, img_file=full_filename, list_from_df= list_from_df)
 
 
 if __name__ == '__main__':
